@@ -46,12 +46,7 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
 }
 
 const RootApp = () => {
-  return React.createElement(ErrorBoundary, null, 
-    React.createElement(View, { style: { flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' } },
-      React.createElement(Text, { style: { color: 'white', fontSize: 30, fontWeight: 'bold', textAlign: 'center' } }, "APP IS ALIVE!"),
-      React.createElement(Text, { style: { color: 'white', fontSize: 16, marginTop: 20, textAlign: 'center' } }, "If you see this red screen, the JS engine works perfectly. The black screen was caused by something inside App.tsx or React Navigation.")
-    )
-  );
+  return React.createElement(ErrorBoundary, null, React.createElement(App, null));
 };
 
 registerRootComponent(RootApp);
