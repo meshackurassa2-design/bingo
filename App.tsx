@@ -39,6 +39,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Image, View, Text, Platform, AppState, AppStateStatus, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoNetworkScreen from './src/screens/NoNetworkScreen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -261,6 +262,7 @@ export default function App() {
   }
 
   return (
+    <SafeAreaProvider>
     <NavigationContainer theme={DarkTheme} ref={navigationRef}>
       <Stack.Navigator 
         screenOptions={{ 
@@ -348,5 +350,6 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
