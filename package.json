@@ -28,11 +28,8 @@
     "react-native-url-polyfill": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-class-properties": "^7.29.7",
-    "@babel/plugin-transform-private-methods": "^7.29.7",
-    "@babel/plugin-transform-private-property-in-object": "^7.29.7",
     "@types/react": "~19.1.10",
-    "babel-preset-expo": "^57.0.2",
+    "babel-preset-expo": "~54.0.0",
     "typescript": "~5.9.2"
   },
   "scripts": {
