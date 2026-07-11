@@ -1,0 +1,24 @@
+export type Movie = {
+  id: string;
+  title: string;
+  description: string;
+  thumbnailUrl: string;
+  videoUrl: string;
+  videoUrl_sd?: string;
+  genre: string;
+  releaseYear: number;
+  views?: number;
+  is_series?: boolean;
+  series_name?: string;
+  episode_number?: number;
+  age_rating?: string;
+  content_warnings?: string;
+  is_hd?: boolean;
+  has_subtitles?: boolean;
+  cast_names?: string;
+  director_name?: string;
+  release_year?: string;
+  duration?: string;
+  downloadQuality?: 'HD' | 'SD';
+  is_free?: boolean;
+};

@@ -1,0 +1,54 @@
+name: Build Unsigned IPA
+
+on:
+  push:
+    branches: [ "master", "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Expo Prebuild
+        run: npx expo prebuild --platform ios --clean
+
+      - name: Install CocoaPods
+        run: pod install
+        working-directory: ios
+
+      - name: Build Unsigned Archive
+        run: |
+          xcodebuild archive \
+            -workspace ios/Bongoflix.xcworkspace \
+            -scheme Bongoflix \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/Bongoflix.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            EXCLUDED_ARCHS="armv7"
+            
+      - name: Package IPA
+        run: |
+          mkdir -p Payload
+          cp -r build/Bongoflix.xcarchive/Products/Applications/Bongoflix.app Payload/
+          zip -r Bongoflix.ipa Payload
+          
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bongoflix-Unsigned-IPA
+          path: Bongoflix.ipa
