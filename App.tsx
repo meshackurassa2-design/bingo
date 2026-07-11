@@ -253,94 +253,13 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#000' }}>
-    <NavigationContainer theme={DarkTheme} ref={navigationRef}>
-      <Stack.Navigator 
-        screenOptions={{ 
-          headerStyle: { backgroundColor: '#000' },
-          headerTintColor: '#fff',
-          headerTitleStyle: { fontWeight: 'bold' },
-          headerBackVisible: false,
-          headerBackTitle: '',
-          contentStyle: { backgroundColor: '#000' }
-        }}
-      >
-        {session && session.user ? (
-          session.user.user_metadata?.avatar_url ? (
-            <>
-              <Stack.Screen 
-                name="MainTabs" 
-                options={{ headerShown: false, title: '' }} 
-              >
-                {() => <MainTabs session={session} />}
-              </Stack.Screen>
-              <Stack.Screen 
-                name="MovieDetail" 
-                component={MovieDetailScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="VideoPlayer" 
-                component={VideoPlayerScreen} 
-                options={{ headerShown: false, presentation: 'fullScreenModal' }} 
-              />
-              <Stack.Screen 
-                name="CategoryScreen" 
-                component={CategoryScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="AdminUpload" 
-                component={AdminUploadScreen} 
-                options={{ headerShown: false, presentation: 'modal' }} 
-              />
-              <Stack.Screen 
-                name="ProfileSelection"  
-                component={ProfileSelectionScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="HelpScreen"  
-                component={HelpScreen} 
-                options={{ headerShown: false, presentation: 'modal' }} 
-              />
-              <Stack.Screen 
-                name="AppSettingsScreen"  
-                component={AppSettingsScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="AccountScreen"  
-                component={AccountScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="TermsScreen"  
-                component={TermsScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
-                name="Subscription" 
-                component={SubscriptionScreen} 
-                options={{ headerShown: false, presentation: 'fullScreenModal' }} 
-              />
-            </>
-          ) : (
-            <Stack.Screen 
-              name="ProfileSelection" 
-              component={ProfileSelectionScreen} 
-              options={{ headerShown: false }} 
-            />
-          )
-        ) : (
-          <Stack.Screen 
-            name="Auth" 
-            component={AuthScreen} 
-            options={{ headerShown: false }} 
-          />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
-    </SafeAreaProvider>
+    <View style={{ flex: 1, backgroundColor: session ? 'green' : 'blue', justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ color: 'white', fontSize: 30, fontWeight: 'bold' }}>
+        {session ? 'SESSION EXISTS (GREEN)' : 'NO SESSION (BLUE)'}
+      </Text>
+      <Text style={{ color: 'white', fontSize: 16, marginTop: 20, textAlign: 'center', padding: 20 }}>
+        If you see this, NavigationContainer or SafeAreaProvider is 100% the cause of the black screen.
+      </Text>
+    </View>
   );
 }
