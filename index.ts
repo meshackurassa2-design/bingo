@@ -8,7 +8,7 @@ const ErrorFallback = ({ error }: { error: any }) => {
       React.createElement(Text, { style: { color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10 } }, "FATAL APP CRASH"),
       React.createElement(Text, { style: { color: 'white', fontSize: 16, marginBottom: 20 } }, "Please screenshot this and show it to the AI:"),
       React.createElement(Text, { style: { color: 'white', fontFamily: 'monospace', fontSize: 12 } }, error?.name + ": " + error?.message),
-      React.createElement(Text, { style: { color: '#fca5a5', fontFamily: 'monospace', fontSize: 10, marginTop: 10 } }, error?.stack || JSON.stringify(error))
+      React.createElement(Text, { style: { color: '#fca5a5', fontFamily: 'monospace', fontSize: 10, marginTop: 10 } }, error?.stack || String(error))
     )
   );
 };
@@ -46,7 +46,12 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
 }
 
 const RootApp = () => {
-  return React.createElement(ErrorBoundary, null, React.createElement(App, null));
+  return React.createElement(ErrorBoundary, null, 
+    React.createElement(View, { style: { flex: 1, backgroundColor: 'red', justifyContent: 'center', alignItems: 'center' } },
+      React.createElement(Text, { style: { color: 'white', fontSize: 30, fontWeight: 'bold', textAlign: 'center' } }, "APP IS ALIVE!"),
+      React.createElement(Text, { style: { color: 'white', fontSize: 16, marginTop: 20, textAlign: 'center' } }, "If you see this red screen, the JS engine works perfectly. The black screen was caused by something inside App.tsx or React Navigation.")
+    )
+  );
 };
 
 registerRootComponent(RootApp);
