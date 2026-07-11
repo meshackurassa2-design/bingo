@@ -202,7 +202,6 @@ export default function App() {
           .eq('user_id', session.user.id)
           .single();
 
-        // If the database has a different device ID registered for this user, log them out
         if (data && data.device_id !== localDeviceId) {
           Alert.alert(
             'Session Expired',
@@ -215,7 +214,6 @@ export default function App() {
 
     const subscription = AppState.addEventListener('change', handleAppStateChange);
     
-    // Also run immediately if we already have a session on mount
     if (session?.user) {
       handleAppStateChange('active');
     }
@@ -231,17 +229,11 @@ export default function App() {
       const state = await Network.getNetworkStateAsync();
       const currentIsConnected = state.isConnected ?? true;
       setIsConnected(currentIsConnected);
-      
-      // Removed auto-reset of bypassNetworkCheck to prevent flapping connections from kicking the user out.
     };
     checkNetwork();
     const interval = setInterval(checkNetwork, 3000);
     return () => clearInterval(interval);
   }, []);
-
-  if (isSplashVisible) {
-    return <SplashScreen onFinish={() => setIsSplashVisible(false)} />;
-  }
 
   if (!isConnected && !bypassNetworkCheck) {
     return (
@@ -252,7 +244,6 @@ export default function App() {
         }}
         onGoToDownloads={() => {
           setBypassNetworkCheck(true);
-          // Wait 300ms to guarantee NavigationContainer is fully mounted
           setTimeout(() => {
             navigationRef.current?.navigate('MainTabs', { screen: 'DownloadsTab' });
           }, 300);
@@ -262,7 +253,7 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider>
+    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#000' }}>
     <NavigationContainer theme={DarkTheme} ref={navigationRef}>
       <Stack.Navigator 
         screenOptions={{ 

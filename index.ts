@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 
 const ErrorFallback = ({ error }: { error: any }) => {
-  return React.createElement(SafeAreaView, { style: { flex: 1, backgroundColor: '#b91c1c', padding: 20 } },
+  return React.createElement(SafeAreaView, { style: { flex: 1, backgroundColor: '#b91c1c', padding: 40, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 99999 } },
     React.createElement(ScrollView, null,
       React.createElement(Text, { style: { color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10 } }, "FATAL APP CRASH"),
       React.createElement(Text, { style: { color: 'white', fontSize: 16, marginBottom: 20 } }, "Please screenshot this and show it to the AI:"),
