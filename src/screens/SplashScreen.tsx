@@ -50,6 +50,13 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
     ]).start(() => {
       onFinish();
     });
+
+    // BULLETPROOF FALLBACK: If animation hangs for ANY reason, force finish after 5 seconds.
+    const fallbackTimeout = setTimeout(() => {
+      onFinish();
+    }, 5000);
+
+    return () => clearTimeout(fallbackTimeout);
   }, []);
 
   return (
