@@ -13,6 +13,8 @@ Notifications.setNotificationHandler({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
+    shouldShowBanner: true,
+    shouldShowList: true,
   }),
 });
 
@@ -265,7 +267,7 @@ export default function App() {
           headerStyle: { backgroundColor: '#000' },
           headerTintColor: '#fff',
           headerTitleStyle: { fontWeight: 'bold' },
-          headerBackTitleVisible: false,
+          headerBackVisible: false,
           headerBackTitle: '',
           contentStyle: { backgroundColor: '#000' }
         }}

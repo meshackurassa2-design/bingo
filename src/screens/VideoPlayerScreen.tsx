@@ -28,6 +28,10 @@ export default function VideoPlayerScreen({ route, navigation }: any) {
   const [showQualityModal, setShowQualityModal] = useState(false);
   const [selectedQuality, setSelectedQuality] = useState<'HD' | 'SD'>(movie.downloadQuality || 'HD');
 
+  const player = useVideoPlayer(movie.videoUrl, (player) => {
+    player.play();
+  });
+
   const changeQuality = (quality: 'HD' | 'SD') => {
     if (quality === selectedQuality) {
       setShowQualityModal(false);
@@ -156,10 +160,6 @@ export default function VideoPlayerScreen({ route, navigation }: any) {
       setNextEpisode(data as Movie);
     }
   };
-
-  const player = useVideoPlayer(movie.videoUrl, (player) => {
-    player.play();
-  });
 
   useEffect(() => {
     // Ensure we seek to the correct time once it's ready, and guarantee it plays.
