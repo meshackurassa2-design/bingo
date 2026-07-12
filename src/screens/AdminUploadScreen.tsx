@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert, ScrollView, Switch, Modal, FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import * as FileSystem from 'expo-file-system/legacy';

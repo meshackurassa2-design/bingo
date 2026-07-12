@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { Movie } from '../types';

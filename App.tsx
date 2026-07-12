@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { NavigationContainer, DarkTheme } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './src/lib/supabase';
 import { View, ActivityIndicator } from 'react-native';
 
 import AuthScreen from './src/screens/AuthScreen';
 import HomeScreen from './src/screens/HomeScreen';
-
-const Stack = createStackNavigator();
+import MovieDetailScreen from './src/screens/MovieDetailScreen';
+import VideoPlayerScreen from './src/screens/VideoPlayerScreen';
+import CategoryScreen from './src/screens/CategoryScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import DownloadsScreen from './src/screens/DownloadsScreen';
+import MyListScreen from './src/screens/MyListScreen';
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Custom router state
+  const [currentScreen, setCurrentScreen] = useState('Home');
+  const [currentParams, setCurrentParams] = useState<any>({});
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,20 +44,47 @@ export default function App() {
     );
   }
 
-  return (
-    <NavigationContainer theme={DarkTheme}>
-      <Stack.Navigator 
-        screenOptions={{ 
-          headerShown: false,
-          cardStyle: { backgroundColor: '#000' }
-        }}
-      >
-        {session && session.user ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
-        ) : (
-          <Stack.Screen name="Auth" component={AuthScreen} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  if (!session || !session.user) {
+    return <AuthScreen />;
+  }
+
+  // Custom navigation object to pass down to screens
+  const navigation = {
+    navigate: (screenName: string, params: any = {}) => {
+      setCurrentScreen(screenName);
+      setCurrentParams(params);
+    },
+    goBack: () => {
+      setCurrentScreen('Home');
+      setCurrentParams({});
+    }
+  };
+
+  // Simple state-based router
+  switch (currentScreen) {
+    case 'Home':
+    case 'MainTabs': // fallback for old nav logic
+    case 'HomeTab':
+      return <HomeScreen navigation={navigation} />;
+    case 'MovieDetail':
+      return <MovieDetailScreen route={{ params: currentParams }} navigation={navigation} />;
+    case 'VideoPlayer':
+      return <VideoPlayerScreen route={{ params: currentParams }} navigation={navigation} />;
+    case 'CategoryScreen':
+      return <CategoryScreen route={{ params: currentParams }} navigation={navigation} />;
+    case 'SearchTab':
+    case 'Search':
+      return <SearchScreen navigation={navigation} />;
+    case 'ProfileTab':
+    case 'Profile':
+      return <ProfileScreen navigation={navigation} session={session} />;
+    case 'DownloadsTab':
+    case 'Downloads':
+      return <DownloadsScreen navigation={navigation} />;
+    case 'MyListTab':
+    case 'MyList':
+      return <MyListScreen navigation={navigation} />;
+    default:
+      return <HomeScreen navigation={navigation} />;
+  }
 }

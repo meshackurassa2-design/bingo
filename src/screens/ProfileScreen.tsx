@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Alert, Linking, Modal, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { supabase } from '../lib/supabase';
 import { useSubscription } from '../hooks/useSubscription';
 import { User } from '@supabase/supabase-js';
