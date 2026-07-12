@@ -7,6 +7,12 @@ import { supabase } from './src/lib/supabase';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Notifications from 'expo-notifications';
 import * as Network from 'expo-network';
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://5968a7bdd4a5028cdc0fd179e26f7747@o4511722921000960.ingest.de.sentry.io/4511722924015696',
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event.
+});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -35,6 +41,8 @@ import TermsScreen from './src/screens/TermsScreen';
 import DownloadsScreen from './src/screens/DownloadsScreen';
 import SearchScreen from './src/screens/SearchScreen';
 import MyListScreen from './src/screens/MyListScreen';
+import ReferralScreen from './src/screens/ReferralScreen';
+import AdminWithdrawalsScreen from './src/screens/AdminWithdrawalsScreen';
 import { Ionicons } from '@expo/vector-icons';
 import { Image, View, Text, Platform, AppState, AppStateStatus, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -315,14 +323,24 @@ export default function App() {
                 options={{ headerShown: false }} 
               />
               <Stack.Screen 
-                name="TermsScreen"  
-                component={TermsScreen} 
-                options={{ headerShown: false }} 
-              />
-              <Stack.Screen 
                 name="Subscription" 
                 component={SubscriptionScreen} 
                 options={{ headerShown: false, presentation: 'fullScreenModal' }} 
+              />
+              <Stack.Screen 
+                name="ReferralScreen" 
+                component={ReferralScreen} 
+                options={{ headerShown: false, presentation: 'modal' }} 
+              />
+              <Stack.Screen 
+                name="AdminWithdrawalsScreen" 
+                component={AdminWithdrawalsScreen} 
+                options={{ headerShown: false, presentation: 'modal' }} 
+              />
+              <Stack.Screen 
+                name="TermsScreen"  
+                component={TermsScreen} 
+                options={{ headerShown: false }} 
               />
             </>
           ) : (
@@ -344,3 +362,5 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
+
+export default Sentry.wrap(App);

@@ -35,7 +35,14 @@
       "expo-font",
       "expo-notifications",
       "expo-image-picker",
-      "expo-screen-orientation"
+      "expo-screen-orientation",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/"
+        }
+      ],
+      "@sentry/react-native"
     ],
     "extra": {
       "eas": {
