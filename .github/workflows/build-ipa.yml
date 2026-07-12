@@ -29,6 +29,8 @@ jobs:
         working-directory: ios
 
       - name: Build Unsigned Archive
+        env:
+          SENTRY_DISABLE_AUTO_UPLOAD: "1"
         run: |
           xcodebuild archive \
             -workspace ios/Bongoflix.xcworkspace \
