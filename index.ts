@@ -1,10 +1,9 @@
-import 'react-native-gesture-handler';
 import { registerRootComponent } from 'expo';
 import React from 'react';
 import { View, Text, ScrollView, SafeAreaView } from 'react-native';
 
 const ErrorFallback = ({ error }: { error: any }) => {
-  return React.createElement(View, { style: { flex: 1, backgroundColor: '#b91c1c', paddingTop: 60, paddingHorizontal: 40, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 99999 } },
+  return React.createElement(SafeAreaView, { style: { flex: 1, backgroundColor: '#b91c1c', padding: 40, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 99999 } },
     React.createElement(ScrollView, null,
       React.createElement(Text, { style: { color: 'white', fontSize: 24, fontWeight: 'bold', marginBottom: 10 } }, "FATAL APP CRASH"),
       React.createElement(Text, { style: { color: 'white', fontSize: 16, marginBottom: 20 } }, "Please screenshot this and show it to the AI:"),
@@ -14,13 +13,11 @@ const ErrorFallback = ({ error }: { error: any }) => {
   );
 };
 
-// A global event emitter is unnecessary if we just expose a setter function
-let triggerGlobalError: (error: any) => void = () => {};
+let fatalError: any = null;
 
 if (typeof ErrorUtils !== 'undefined') {
   ErrorUtils.setGlobalHandler((error, isFatal) => {
-    console.error("Global Error Caught:", error);
-    triggerGlobalError(error);
+    fatalError = error;
   });
 }
 
@@ -30,10 +27,6 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
   constructor(props: any) {
     super(props);
     this.state = { hasError: false, error: null };
-    
-    triggerGlobalError = (error: any) => {
-      this.setState({ hasError: true, error });
-    };
   }
 
   static getDerivedStateFromError(error: any) {
@@ -45,8 +38,8 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
   }
 
   render() {
-    if (this.state.hasError) {
-      return React.createElement(ErrorFallback, { error: this.state.error });
+    if (this.state.hasError || fatalError) {
+      return React.createElement(ErrorFallback, { error: this.state.error || fatalError });
     }
     return this.props.children;
   }

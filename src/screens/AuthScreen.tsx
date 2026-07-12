@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../lib/supabase';
 
@@ -72,67 +73,69 @@ export default function AuthScreen() {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={{ flex: 1 }}>
-        <View style={styles.content}>
-          <Text style={styles.title}>BONGOFLIX</Text>
-          
-          {isSignUp && (
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <View style={styles.content}>
+            <Text style={styles.title}>BONGOFLIX</Text>
+            
+            {isSignUp && (
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={setUsername}
+                  value={username}
+                  placeholder="Username"
+                  placeholderTextColor="#8c8c8c"
+                  autoCapitalize="none"
+                />
+              </View>
+            )}
+
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
-                onChangeText={setUsername}
-                value={username}
-                placeholder="Username"
+                onChangeText={setEmail}
+                value={email}
+                placeholder="Email"
+                placeholderTextColor="#8c8c8c"
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+            
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                onChangeText={setPassword}
+                value={password}
+                secureTextEntry
+                placeholder="Password"
                 placeholderTextColor="#8c8c8c"
                 autoCapitalize="none"
               />
             </View>
-          )}
 
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              onChangeText={setEmail}
-              value={email}
-              placeholder="Email"
-              placeholderTextColor="#8c8c8c"
-              autoCapitalize="none"
-              keyboardType="email-address"
-            />
+            <TouchableOpacity 
+              style={styles.mainButton} 
+              onPress={handleAuth}
+              disabled={loading}
+            >
+              <Text style={styles.mainButtonText}>
+                {isSignUp ? 'Sign Up' : 'Sign In'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.toggleButton} 
+              onPress={() => setIsSignUp(!isSignUp)}
+            >
+              <Text style={styles.toggleText}>
+                {isSignUp ? 'Already have an account? Sign In' : 'New to Bongoflix? Sign Up now.'}
+              </Text>
+            </TouchableOpacity>
           </View>
-          
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              onChangeText={setPassword}
-              value={password}
-              secureTextEntry
-              placeholder="Password"
-              placeholderTextColor="#8c8c8c"
-              autoCapitalize="none"
-            />
-          </View>
-
-          <TouchableOpacity 
-            style={styles.mainButton} 
-            onPress={handleAuth}
-            disabled={loading}
-          >
-            <Text style={styles.mainButtonText}>
-              {isSignUp ? 'Sign Up' : 'Sign In'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.toggleButton} 
-            onPress={() => setIsSignUp(!isSignUp)}
-          >
-            <Text style={styles.toggleText}>
-              {isSignUp ? 'Already have an account? Sign In' : 'New to Bongoflix? Sign Up now.'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
     </View>
   );
 }

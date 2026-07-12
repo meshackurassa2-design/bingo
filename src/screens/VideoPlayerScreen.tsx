@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Animated, ActivityIndicator, BackHandler, Modal, Alert , SafeAreaView} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, Animated, ActivityIndicator, BackHandler, Modal, Alert } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Movie } from '../types';
