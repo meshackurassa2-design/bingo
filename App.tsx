@@ -7,12 +7,6 @@ import { supabase } from './src/lib/supabase';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import * as Notifications from 'expo-notifications';
 import * as Network from 'expo-network';
-import * as Sentry from '@sentry/react-native';
-
-Sentry.init({
-  dsn: 'https://5968a7bdd4a5028cdc0fd179e26f7747@o4511722921000960.ingest.de.sentry.io/4511722924015696',
-  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event.
-});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -363,4 +357,3 @@ export default function App() {
   );
 }
 
-export default Sentry.wrap(App);
