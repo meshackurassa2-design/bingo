@@ -99,24 +99,34 @@ export default function AdminUploadScreen({ route, navigation }: any) {
   };
 
   const uploadFile = async (bucket: string, path: string, uri: string, contentType: string) => {
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    // FileSystem.uploadAsync natively streams the file over the network, avoiding OOMs and 0-byte blobs!
-    const response = await FileSystem.uploadAsync(
-      `${supabaseUrl}/storage/v1/object/${bucket}/${path}`,
-      uri,
-      {
-        httpMethod: 'POST',
-        headers: {
-          Authorization: `Bearer ${session?.access_token || supabaseAnonKey}`,
-          'Content-Type': contentType,
-          'x-upsert': 'true',
+    if (Platform.OS === 'web') {
+      const res = await fetch(uri);
+      const blob = await res.blob();
+      const { error } = await supabase.storage.from(bucket).upload(path, blob, {
+        contentType,
+        upsert: true,
+      });
+      if (error) throw error;
+    } else {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      // FileSystem.uploadAsync natively streams the file over the network, avoiding OOMs and 0-byte blobs!
+      const response = await FileSystem.uploadAsync(
+        `${supabaseUrl}/storage/v1/object/${bucket}/${path}`,
+        uri,
+        {
+          httpMethod: 'POST',
+          headers: {
+            Authorization: `Bearer ${session?.access_token || supabaseAnonKey}`,
+            'Content-Type': contentType,
+            'x-upsert': 'true',
+          }
         }
-      }
-    );
+      );
 
-    if (response.status !== 200) {
-      throw new Error(`Upload failed with status ${response.status}: ${response.body}`);
+      if (response.status !== 200) {
+        throw new Error(`Upload failed with status ${response.status}: ${response.body}`);
+      }
     }
     
     const { data: { publicUrl } } = supabase.storage
@@ -154,7 +164,7 @@ export default function AdminUploadScreen({ route, navigation }: any) {
       
       // Upload Thumbnail only if it changed (is a local URI)
       let thumbUrl = thumbnailUri;
-      if (thumbnailUri && thumbnailUri.startsWith('file://')) {
+      if (thumbnailUri && (thumbnailUri.startsWith('file://') || thumbnailUri.startsWith('blob:') || thumbnailUri.startsWith('data:'))) {
         thumbUrl = await uploadFile('thumbnails', `${fileName}.jpg`, thumbnailUri, 'image/jpeg');
       }
       
@@ -162,7 +172,7 @@ export default function AdminUploadScreen({ route, navigation }: any) {
       let vidUrl = videoUri;
       if (useExternalVideo) {
         vidUrl = externalVideoUrl;
-      } else if (videoUri && videoUri.startsWith('file://')) {
+      } else if (videoUri && (videoUri.startsWith('file://') || videoUri.startsWith('blob:') || videoUri.startsWith('data:'))) {
         vidUrl = await uploadFile('videos', `${fileName}.mp4`, videoUri, 'video/mp4');
       }
 
