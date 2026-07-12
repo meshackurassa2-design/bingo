@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Alert, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '../lib/supabase';
@@ -95,9 +95,12 @@ export default function AuthScreen() {
       .upsert({ user_id: userId, device_id: deviceId }, { onConflict: 'user_id' });
   }
 
+  const Wrapper = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
+  const wrapperProps = Platform.OS === 'web' ? { style: { flex: 1 } } : { onPress: Keyboard.dismiss, accessible: false, style: { flex: 1 } };
+
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <Wrapper {...wrapperProps as any}>
         <SafeAreaView style={{ flex: 1 }}>
           <View style={styles.content}>
             <Text style={styles.title}>BONGOFLIX</Text>
@@ -171,7 +174,7 @@ export default function AuthScreen() {
             </TouchableOpacity>
           </View>
         </SafeAreaView>
-      </TouchableWithoutFeedback>
+      </Wrapper>
     </View>
   );
 }

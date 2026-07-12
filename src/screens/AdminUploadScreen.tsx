@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert, ScrollView, Switch, Modal, FlatList } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ActivityIndicator, Alert, ScrollView, Switch, Modal, FlatList, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import * as FileSystem from 'expo-file-system/legacy';
 import { supabase, supabaseUrl, supabaseAnonKey } from '../lib/supabase';
 import { Ionicons } from '@expo/vector-icons';
+import WebCropModal from '../components/WebCropModal';
 
 const GENRES = [
   'Action', 'Anime', 'Comedy', 'Drama', 'Horror', 'Romance', 'Sci-Fi', 'Thriller', 'Documentary', 'Animation'
@@ -18,6 +19,9 @@ export default function AdminUploadScreen({ route, navigation }: any) {
   const [genre, setGenre] = useState(editMovie?.genre || GENRES[0]);
   const [thumbnailUri, setThumbnailUri] = useState<string | null>(editMovie?.thumbnailUrl || null);
   const [videoUri, setVideoUri] = useState<string | null>(editMovie?.videoUrl || null);
+  
+  const [showWebCropModal, setShowWebCropModal] = useState(false);
+  const [tempImageUri, setTempImageUri] = useState<string | null>(null);
   
   const [useExternalVideo, setUseExternalVideo] = useState(false);
   const [externalVideoUrl, setExternalVideoUrl] = useState('');
@@ -73,7 +77,12 @@ export default function AdminUploadScreen({ route, navigation }: any) {
     });
 
     if (!result.canceled) {
-      setThumbnailUri(result.assets[0].uri);
+      if (Platform.OS === 'web') {
+        setTempImageUri(result.assets[0].uri);
+        setShowWebCropModal(true);
+      } else {
+        setThumbnailUri(result.assets[0].uri);
+      }
     }
   };
 
@@ -469,6 +478,20 @@ export default function AdminUploadScreen({ route, navigation }: any) {
           )}
         </SafeAreaView>
       </Modal>
+
+      <WebCropModal
+        visible={showWebCropModal}
+        imageUri={tempImageUri}
+        onClose={() => {
+          setShowWebCropModal(false);
+          setTempImageUri(null);
+        }}
+        onCropComplete={(croppedUri: string) => {
+          setThumbnailUri(croppedUri);
+          setShowWebCropModal(false);
+          setTempImageUri(null);
+        }}
+      />
     </SafeAreaView>
   );
 }
