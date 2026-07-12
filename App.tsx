@@ -5,18 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './src/lib/supabase';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import * as Notifications from 'expo-notifications';
 import * as Network from 'expo-network';
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
 
 import SplashScreen from './src/screens/SplashScreen';
 import HomeScreen from './src/screens/HomeScreen';
@@ -131,19 +120,12 @@ export default function App() {
   const navigationRef = useRef<any>(null);
 
   useEffect(() => {
-    // Request notification permissions
-    const requestPermissions = async () => {
-      if (Platform.OS !== 'web') {
-        const { status } = await Notifications.requestPermissionsAsync();
-        if (status !== 'granted') {
-          console.log('Notification permissions not granted');
-        }
-      }
-    };
-    requestPermissions();
-
     // Lock the entire app to Portrait by default so it doesn't rotate everywhere
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    try {
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    } catch (error) {
+      console.log('Screen orientation lock failed', error);
+    }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
@@ -164,29 +146,6 @@ export default function App() {
       }
     });
 
-    // Listen to real-time database changes for push notifications!
-    const channel = supabase
-      .channel('public:movies')
-      .on(
-        'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'movies' },
-        (payload) => {
-          const newMovie = payload.new;
-          Notifications.scheduleNotificationAsync({
-            content: {
-              title: "New Arrival! 🍿",
-              body: `${newMovie.title} is now available to watch!`,
-              data: { movieId: newMovie.id },
-            },
-            trigger: null,
-          });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   }, []);
 
   // Check active device whenever app comes to foreground or session changes
@@ -226,9 +185,13 @@ export default function App() {
   // Network monitoring - check every 3 seconds
   useEffect(() => {
     const checkNetwork = async () => {
-      const state = await Network.getNetworkStateAsync();
-      const currentIsConnected = state.isConnected ?? true;
-      setIsConnected(currentIsConnected);
+      try {
+        const state = await Network.getNetworkStateAsync();
+        const currentIsConnected = state.isConnected ?? true;
+        setIsConnected(currentIsConnected);
+      } catch (error) {
+        setIsConnected(true);
+      }
     };
     checkNetwork();
     const interval = setInterval(checkNetwork, 3000);
@@ -239,8 +202,12 @@ export default function App() {
     return (
       <NoNetworkScreen
         onRetry={async () => {
-          const state = await Network.getNetworkStateAsync();
-          setIsConnected(state.isConnected ?? false);
+          try {
+            const state = await Network.getNetworkStateAsync();
+            setIsConnected(state.isConnected ?? false);
+          } catch (e) {
+            setIsConnected(true);
+          }
         }}
         onGoToDownloads={() => {
           setBypassNetworkCheck(true);
