@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavigationContainer, DarkTheme } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './src/lib/supabase';
@@ -41,7 +41,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoNetworkScreen from './src/screens/NoNetworkScreen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MainTabs({ session }: { session: Session | null }) {
