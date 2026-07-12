@@ -14,11 +14,13 @@ const ErrorFallback = ({ error }: { error: any }) => {
   );
 };
 
-let fatalError: any = null;
+// A global event emitter is unnecessary if we just expose a setter function
+let triggerGlobalError: (error: any) => void = () => {};
 
 if (typeof ErrorUtils !== 'undefined') {
   ErrorUtils.setGlobalHandler((error, isFatal) => {
-    fatalError = error;
+    console.error("Global Error Caught:", error);
+    triggerGlobalError(error);
   });
 }
 
@@ -28,6 +30,10 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
   constructor(props: any) {
     super(props);
     this.state = { hasError: false, error: null };
+    
+    triggerGlobalError = (error: any) => {
+      this.setState({ hasError: true, error });
+    };
   }
 
   static getDerivedStateFromError(error: any) {
@@ -39,8 +45,8 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
   }
 
   render() {
-    if (this.state.hasError || fatalError) {
-      return React.createElement(ErrorFallback, { error: this.state.error || fatalError });
+    if (this.state.hasError) {
+      return React.createElement(ErrorFallback, { error: this.state.error });
     }
     return this.props.children;
   }
