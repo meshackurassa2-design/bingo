@@ -22,7 +22,7 @@ if (typeof ErrorUtils !== 'undefined') {
   });
 }
 
-import AuthScreen from './src/screens/AuthScreen';
+import App from './App';
 
 class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any }> {
   constructor(props: any) {
@@ -47,7 +47,7 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
 }
 
 const RootApp = () => {
-  return React.createElement(ErrorBoundary, null, React.createElement(AuthScreen, null));
+  return React.createElement(ErrorBoundary, null, React.createElement(App, null));
 };
 
 registerRootComponent(RootApp);
