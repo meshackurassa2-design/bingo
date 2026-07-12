@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, ScrollView, 
 import { Movie } from '../types';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../lib/supabase';
-import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -16,28 +15,26 @@ export default function HomeScreen({ navigation }: any) {
   const [showNotificationsModal, setShowNotificationsModal] = useState(false);
   const [continueWatching, setContinueWatching] = useState<any[]>([]);
 
-  useFocusEffect(
-    React.useCallback(() => {
-      const loadContinueWatching = async () => {
-        try {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session?.user) return;
-          
-          const stored = await AsyncStorage.getItem(`bongoflix_continue_watching_${session.user.id}`);
-          if (stored) {
-            const dict = JSON.parse(stored);
-            const arr = Object.values(dict).sort((a: any, b: any) => b.timestamp - a.timestamp);
-            setContinueWatching(arr);
-          } else {
-            setContinueWatching([]);
-          }
-        } catch (e: any) {
-          console.log('Error loading continue watching', e);
+  useEffect(() => {
+    const loadContinueWatching = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) return;
+        
+        const stored = await AsyncStorage.getItem(`bongoflix_continue_watching_${session.user.id}`);
+        if (stored) {
+          const dict = JSON.parse(stored);
+          const arr = Object.values(dict).sort((a: any, b: any) => b.timestamp - a.timestamp);
+          setContinueWatching(arr);
+        } else {
+          setContinueWatching([]);
         }
-      };
-      loadContinueWatching();
-    }, [])
-  );
+      } catch (e: any) {
+        console.log('Error loading continue watching', e);
+      }
+    };
+    loadContinueWatching();
+  }, []);
 
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -77,12 +74,10 @@ export default function HomeScreen({ navigation }: any) {
 
   const GENRES = ['Action', 'Anime', 'Comedy', 'Drama', 'Romance', 'Thriller'];
 
-  useFocusEffect(
-    React.useCallback(() => {
-      fetchMovies();
-      loadHiddenIds();
-    }, [])
-  );
+  useEffect(() => {
+    fetchMovies();
+    loadHiddenIds();
+  }, []);
 
   const loadHiddenIds = async () => {
     const stored = await AsyncStorage.getItem('bongoflix_hidden');
