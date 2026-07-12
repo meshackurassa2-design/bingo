@@ -253,7 +253,7 @@ export default function App() {
   }
 
   return (
-    <SafeAreaProvider style={{ flex: 1, backgroundColor: '#000' }}>
+    <>
       <View style={{ paddingTop: 60, paddingBottom: 20, backgroundColor: 'blue', zIndex: 9999 }}>
         <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
           IF YOU SEE THIS BLUE BAR, APP IS RUNNING PERFECTLY, BUT NAVIGATION CONTAINER BELOW IS BLACK
@@ -346,6 +346,6 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
-    </SafeAreaProvider>
+    </>
   );
 }
