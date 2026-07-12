@@ -103,6 +103,7 @@ export default function ProfileScreen({ navigation }: any) {
   };
 
   const menuItems = [
+    { title: 'Earn with Bongoflix', icon: 'cash-outline', onPress: () => navigation.navigate('ReferralScreen') },
     { title: 'App Settings', icon: 'settings-outline', onPress: () => navigation.navigate('AppSettingsScreen') },
     { title: 'Account', icon: 'person-outline', onPress: () => navigation.navigate('AccountScreen') },
     { title: 'Help', icon: 'help-circle-outline', onPress: () => Linking.openURL('mailto:meshackurassa2@gmail.com?subject=Bongo Stream Support') },
@@ -144,6 +145,8 @@ export default function ProfileScreen({ navigation }: any) {
             {user?.user_metadata?.username || user?.email?.split('@')[0] || 'User'}
           </Text>
         </View>
+
+
 
         <TouchableOpacity style={styles.manageButton} onPress={() => setShowAvatarModal(true)}>
           <Text style={styles.manageButtonText}>Manage Profile Image</Text>

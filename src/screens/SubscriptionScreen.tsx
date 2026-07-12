@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert, ActivityIndicator, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../lib/supabase';
 
 export default function SubscriptionScreen({ navigation }: any) {
+  const insets = useSafeAreaInsets();
   const [selectedPlan, setSelectedPlan] = useState('1_month');
   const [isProcessing, setIsProcessing] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -82,7 +83,7 @@ export default function SubscriptionScreen({ navigation }: any) {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: Math.max(insets.top, 20) }]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.closeButton}>
           <Ionicons name="close" size={28} color="#fff" />
@@ -213,7 +214,7 @@ export default function SubscriptionScreen({ navigation }: any) {
           By clicking Pay, a USSD prompt will appear on your phone to enter your PIN.
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 

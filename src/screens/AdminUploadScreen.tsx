@@ -208,9 +208,14 @@ export default function AdminUploadScreen({ route, navigation }: any) {
           <Text style={styles.backText}>Cancel</Text>
         </TouchableOpacity>
         <Text style={styles.title}>{editMovie ? 'Update Movie' : 'Upload Movie'}</Text>
-        <TouchableOpacity onPress={() => setShowInbox(true)} style={styles.inboxBtn}>
-          <Ionicons name="mail" size={24} color="#fff" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <TouchableOpacity onPress={() => navigation.navigate('AdminWithdrawalsScreen')} style={[styles.inboxBtn, { marginRight: 15 }]}>
+            <Ionicons name="wallet" size={24} color="#4caf50" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => setShowInbox(true)} style={styles.inboxBtn}>
+            <Ionicons name="mail" size={24} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
@@ -482,14 +487,14 @@ const styles = StyleSheet.create({
     borderBottomColor: '#222',
   },
   backBtn: {
-    width: 60,
+    padding: 5,
   },
   backText: {
     color: '#fff',
     fontSize: 16,
   },
   inboxBtn: {
-    width: 60,
+    padding: 5,
     alignItems: 'flex-end',
   },
   title: {

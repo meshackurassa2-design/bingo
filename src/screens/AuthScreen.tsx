@@ -11,6 +11,8 @@ export default function AuthScreen() {
   const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [referralCode, setReferralCode] = useState('');
+
   async function handleAuth() {
     if (!email || !password || (isSignUp && !username)) {
       Alert.alert('Error', 'Please fill in all fields.');
@@ -43,6 +45,9 @@ export default function AuthScreen() {
         Alert.alert('Error', error.message);
       } else if (data.session) {
         await registerDevice(data.session.user.id);
+        if (referralCode.trim()) {
+           await linkReferralCode(data.session.user.id, referralCode.trim());
+        }
       }
     } else {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -57,6 +62,25 @@ export default function AuthScreen() {
     }
     
     setLoading(false);
+  }
+
+  async function linkReferralCode(userId: string, code: string) {
+    // Lookup the referrer's UUID using the provided code
+    const { data: referrer, error: lookupError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('referral_code', code.toUpperCase())
+      .single();
+      
+    if (referrer && referrer.id) {
+       // Link it!
+       await supabase
+         .from('profiles')
+         .update({ referred_by: referrer.id })
+         .eq('id', userId);
+    } else {
+       console.log('Invalid referral code provided:', code);
+    }
   }
 
   async function registerDevice(userId: string) {
@@ -79,16 +103,28 @@ export default function AuthScreen() {
             <Text style={styles.title}>BONGOFLIX</Text>
             
             {isSignUp && (
-              <View style={styles.inputContainer}>
-                <TextInput
-                  style={styles.input}
-                  onChangeText={setUsername}
-                  value={username}
-                  placeholder="Username"
-                  placeholderTextColor="#8c8c8c"
-                  autoCapitalize="none"
-                />
-              </View>
+              <>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={setUsername}
+                    value={username}
+                    placeholder="Username"
+                    placeholderTextColor="#8c8c8c"
+                    autoCapitalize="none"
+                  />
+                </View>
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    onChangeText={(text) => setReferralCode(text.toUpperCase())}
+                    value={referralCode}
+                    placeholder="Referral Code (Optional)"
+                    placeholderTextColor="#8c8c8c"
+                    autoCapitalize="characters"
+                  />
+                </View>
+              </>
             )}
 
             <View style={styles.inputContainer}>
