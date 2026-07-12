@@ -191,8 +191,9 @@ export default function App() {
     };
   }, []);
 
-  // Check active device whenever app comes to foreground or session changes
   useEffect(() => {
+    let deviceCheckInterval: NodeJS.Timeout;
+
     const handleAppStateChange = async (nextAppState: AppStateStatus) => {
       if (nextAppState === 'active' && session?.user) {
         const localDeviceId = await AsyncStorage.getItem('bongoflix_device_id');
@@ -214,16 +215,37 @@ export default function App() {
       }
     };
 
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
+    const startDeviceCheck = () => {
+      if (deviceCheckInterval) clearInterval(deviceCheckInterval);
+      deviceCheckInterval = setInterval(() => {
+        handleAppStateChange('active');
+      }, 10000); // Check every 10 seconds while active
+    };
+
+    const stopDeviceCheck = () => {
+      if (deviceCheckInterval) clearInterval(deviceCheckInterval);
+    };
+
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (nextAppState === 'active' && session?.user) {
+        handleAppStateChange('active');
+        startDeviceCheck();
+      } else {
+        stopDeviceCheck();
+      }
+    });
     
     if (session?.user) {
       handleAppStateChange('active');
+      startDeviceCheck();
     }
 
     return () => {
       subscription.remove();
+      stopDeviceCheck();
     };
   }, [session?.user?.id]);
+
 
   // Network monitoring - check every 3 seconds
   useEffect(() => {
@@ -256,7 +278,10 @@ export default function App() {
 
   return (
     <SafeAreaProvider style={{ flex: 1, backgroundColor: '#000' }}>
-    <NavigationContainer theme={DarkTheme} ref={navigationRef}>
+      {isSplashVisible ? (
+        <SplashScreen onFinish={() => setIsSplashVisible(false)} />
+      ) : (
+        <NavigationContainer theme={DarkTheme} ref={navigationRef}>
       <Stack.Navigator 
         screenOptions={{ 
           headerStyle: { backgroundColor: '#000' },
@@ -353,6 +378,7 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    )}
     </SafeAreaProvider>
   );
 }

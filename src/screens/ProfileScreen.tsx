@@ -10,7 +10,7 @@ export default function ProfileScreen({ navigation }: any) {
   const [user, setUser] = useState<User | null>(null);
   const [showAvatarModal, setShowAvatarModal] = useState(false);
   const [updatingAvatar, setUpdatingAvatar] = useState(false);
-  const { isSubscribed, planDetails } = useSubscription();
+  const { isSubscribed, loading, planDetails } = useSubscription();
 
   const [requestTitle, setRequestTitle] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -158,7 +158,12 @@ export default function ProfileScreen({ navigation }: any) {
             <Ionicons name="card" size={24} color="#fff" />
             <Text style={styles.subTitle}>Subscription Plan</Text>
           </View>
-          {isSubscribed ? (
+          {loading ? (
+            <View style={{ padding: 20, alignItems: 'center' }}>
+              <ActivityIndicator size="small" color="#E50914" />
+              <Text style={{ color: '#8c8c8c', marginTop: 10 }}>Loading subscription...</Text>
+            </View>
+          ) : isSubscribed ? (
             <View style={styles.activeSubCard}>
               <View style={styles.activeSubHeader}>
                 <Text style={styles.activeSubText}>BongoFlix Premium</Text>
