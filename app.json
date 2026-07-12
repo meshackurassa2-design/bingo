@@ -24,11 +24,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "splash": {
-      "image": "./assets/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
-    },
     "plugins": [
       "expo-video"
     ]
