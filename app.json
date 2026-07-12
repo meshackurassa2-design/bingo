@@ -19,7 +19,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.dapazcm.bongoflixclone"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,7 +31,16 @@
       "backgroundColor": "#000000"
     },
     "plugins": [
-      "expo-video"
-    ]
+      "expo-video",
+      "expo-font",
+      "expo-notifications",
+      "expo-image-picker",
+      "expo-screen-orientation"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "a4d8c12a-a940-4c24-9c69-05fe9b47f0fb"
+      }
+    }
   }
 }
