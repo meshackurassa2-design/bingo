@@ -46,7 +46,9 @@ class ErrorBoundary extends React.Component<any, { hasError: boolean, error: any
 }
 
 const RootApp = () => {
-  return React.createElement(ErrorBoundary, null, React.createElement(App, null));
+  return React.createElement(View, { style: { flex: 1, backgroundColor: 'white', justifyContent: 'center', alignItems: 'center' } },
+    React.createElement(Text, { style: { color: 'black', fontSize: 24, fontWeight: 'bold' } }, "THIS IS INDEX.TS. IF YOU SEE THIS, JS IS WORKING.")
+  );
 };
 
 registerRootComponent(RootApp);
